@@ -11,11 +11,14 @@
         .calendar { margin-top: 20px; }
         .input-group { margin-bottom: 10px; }
         label { display: block; margin-bottom: 5px; }
-        input[type="text"], input[type="number"] { width: 100%; padding: 8px; margin-bottom: 10px; }
+        input[type="text"], input[type="number"], input[type="datetime-local"] { width: 100%; padding: 8px; margin-bottom: 10px; }
         button { width: 100%; padding: 10px; background: #4CAF50; color: white; border: none; cursor: pointer; }
         button:hover { background: #45a049; }
         .result { margin-top: 20px; padding: 10px; background: #f1f1f1; }
         .hidden { display: none; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+        th { background-color: #f2f2f2; }
     </style>
 </head>
 <body>
@@ -26,7 +29,9 @@
         
         <div id="main" class="calendar">
             <h2>메인 페이지</h2>
-            <!-- 달력 표시 부분 -->
+            <table id="calendar">
+                <!-- 달력 내용이 여기 들어갑니다 -->
+            </table>
         </div>
 
         <div id="salary" class="input-group hidden">
@@ -118,69 +123,47 @@
         }
 
         // 페이지가 로드될 때 기본 날짜와 시간을 설정합니다.
-        window.onload = setDefaultDateTime;
-    </script>
-</body>
-</html>
+        window.onload = function() {
+            setDefaultDateTime();
+            generateCalendar();
+        };
 
-
-
-            <input type="number" id="dinnerBreak" name="dinnerBreak" value="0">
-            
-            <button onclick="calculateSalary()">계산하기</button>
-            
-            <div class="result" id="result"></div>
-        </div>
-    </div>
-
-    <script>
-        // 오늘 날짜와 기본 시간을 설정하는 함수
-        function setDefaultDateTime() {
+        // 달력을 생성하는 함수
+        function generateCalendar() {
+            const calendar = document.getElementById('calendar');
             const today = new Date();
             const year = today.getFullYear();
-            const month = String(today.getMonth() + 1).padStart(2, '0');
-            const day = String(today.getDate()).padStart(2, '0');
-            const startDate = `${year}-${month}-${day}T07:00`;
-            const endDate = `${year}-${month}-${day}T16:00`;
-
-            document.getElementById('startDate').value = startDate;
-            document.getElementById('endDate').value = endDate;
-        }
-
-        function calculateSalary() {
-            const startDate = new Date(document.getElementById('startDate').value);
-            const endDate = new Date(document.getElementById('endDate').value);
-            const lunchBreak = parseInt(document.getElementById('lunchBreak').value, 10);
-            const dinnerBreak = parseInt(document.getElementById('dinnerBreak').value, 10);
-
-            const millisecondsPerHour = 1000 * 60 * 60;
-            const hoursWorked = (endDate - startDate) / millisecondsPerHour;
-            const effectiveHours = hoursWorked - (lunchBreak / 60) - (dinnerBreak / 60);
-
-            let totalPay = 0;
-            let totalUnits = 0;
-            const basePayPerHour = 17500; // 시간당 급여 (140,000원 / 8시간)
-
-            if (effectiveHours <= 8) {
-                totalUnits = effectiveHours / 8;
-                totalPay = totalUnits * 140000; // 1품 = 140,000원
-            } else {
-                totalUnits = 1 + (effectiveHours - 8) / 12; // 8시간 초과 근무 계산
-                totalPay = 140000 + (effectiveHours - 8) * basePayPerHour * 1.5; // 초과 근무 시 1.5배 지급
+            const month = today.getMonth();
+            
+            // 달력 헤더 생성
+            const daysOfWeek = ['일', '월', '화', '수', '목', '금', '토'];
+            let headerRow = '<tr>';
+            for (let day of daysOfWeek) {
+                headerRow += `<th>${day}</th>`;
             }
-
-            document.getElementById('result').innerHTML = `총 급여: ${totalPay.toLocaleString()}원<br>총 품: ${totalUnits.toFixed(2)}품`;
+            headerRow += '</tr>';
+            calendar.innerHTML = headerRow;
+            
+            // 달력 날짜 생성
+            const firstDayOfMonth = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            let date = 1;
+            for (let i = 0; i < 6; i++) {
+                let row = '<tr>';
+                for (let j = 0; j < 7; j++) {
+                    if (i === 0 && j < firstDayOfMonth) {
+                        row += '<td></td>';
+                    } else if (date > daysInMonth) {
+                        break;
+                    } else {
+                        row += `<td>${date}</td>`;
+                        date++;
+                    }
+                }
+                row += '</tr>';
+                calendar.innerHTML += row;
+            }
         }
-
-        function navigateTo(page) {
-            document.getElementById('salary').style.display = 'none';
-            document.getElementById('main').style.display = 'none';
-            document.getElementById('settings').style.display = 'none';
-            document.getElementById(page).style.display = 'block';
-        }
-
-        // 페이지가 로드될 때 기본 날짜와 시간을 설정합니다.
-        window.onload = setDefaultDateTime;
     </script>
 </body>
 </html>
