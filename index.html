@@ -5,164 +5,76 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>급여계산기</title>
     <style>
-        body { font-family: Arial, sans-serif; }
-        .container { width: 80%; margin: 0 auto; }
-        .header, .footer { text-align: center; padding: 10px; background: #f8f8f8; }
-        .calendar { margin-top: 20px; }
-        .input-group { margin-bottom: 10px; }
-        label { display: block; margin-bottom: 5px; }
-        input[type="text"], input[type="number"], input[type="datetime-local"] { width: 100%; padding: 8px; margin-bottom: 10px; }
-        button { width: 100%; padding: 10px; background: #4CAF50; color: white; border: none; cursor: pointer; }
-        button:hover { background: #45a049; }
-        .result { margin-top: 20px; padding: 10px; background: #f1f1f1; }
-        .hidden { display: none; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
-        th { background-color: #f2f2f2; }
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('background-image-url'); /* 배경 이미지 URL */
+            background-size: cover;
+            background-position: center;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            flex: 1;
+        }
+        .header, .footer {
+            text-align: center;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.8);
+        }
+        .footer {
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+            left: 0;
+        }
+        button {
+            width: 100px;
+            padding: 10px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .buttons {
+            display: flex;
+            justify-content: space-around;
+        }
     </style>
 </head>
 <body>
+    <div class="header">
+        <h1>급여계산기</h1>
+        <div class="buttons">
+            <button onclick="navigateTo('salary.html')">급여계산</button>
+            <button onclick="navigateTo('index.html')">메인페이지</button>
+            <button onclick="navigateTo('settings.html')">설정</button>
+        </div>
+    </div>
+
     <div class="container">
-        <div class="header">
-            <h1>급여계산기</h1>
-        </div>
-        
-        <div id="main" class="calendar">
-            <h2>메인 페이지</h2>
-            <table id="calendar">
-                <!-- 달력 내용이 여기 들어갑니다 -->
-            </table>
-        </div>
+        <h2>메인 페이지</h2>
+        <p>여기에 메인 페이지 내용을 추가하세요.</p>
+    </div>
 
-        <div id="salary" class="input-group hidden">
-            <label for="startDate">근무 시작 날짜 및 시간:</label>
-            <input type="datetime-local" id="startDate" name="startDate">
-            
-            <label for="endDate">근무 종료 날짜 및 시간:</label>
-            <input type="datetime-local" id="endDate" name="endDate">
-            
-            <label for="lunchBreak">점심시간 (분):</label>
-            <input type="number" id="lunchBreak" name="lunchBreak" value="60">
-            
-            <label for="dinnerBreak">저녁시간 (분):</label>
-            <input type="number" id="dinnerBreak" name="dinnerBreak" value="0">
-            
-            <button onclick="calculateSalary()">계산하기</button>
-            
-            <div class="result" id="result"></div>
-        </div>
-
-        <div id="settings" class="input-group hidden">
-            <h2>설정 페이지</h2>
-            <label for="userName">사용자 이름:</label>
-            <input type="text" id="userName" name="userName">
-            
-            <label for="userEmail">이메일 주소:</label>
-            <input type="email" id="userEmail" name="userEmail">
-            
-            <button onclick="saveSettings()">저장하기</button>
-        </div>
-
-        <div class="footer">
-            <button onclick="navigateTo('salary')">급여계산</button>
-            <button onclick="navigateTo('main')">메인페이지</button>
-            <button onclick="navigateTo('settings')">설정</button>
+    <div class="footer">
+        <div class="buttons">
+            <button onclick="navigateTo('salary.html')">급여계산</button>
+            <button onclick="navigateTo('index.html')">메인페이지</button>
+            <button onclick="navigateTo('settings.html')">설정</button>
         </div>
     </div>
 
     <script>
-        // 오늘 날짜와 기본 시간을 설정하는 함수
-        function setDefaultDateTime() {
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = String(today.getMonth() + 1).padStart(2, '0');
-            const day = String(today.getDate()).padStart(2, '0');
-            const startDate = `${year}-${month}-${day}T07:00`;
-            const endDate = `${year}-${month}-${day}T16:00`;
-
-            document.getElementById('startDate').value = startDate;
-            document.getElementById('endDate').value = endDate;
-        }
-
-        function calculateSalary() {
-            const startDate = new Date(document.getElementById('startDate').value);
-            const endDate = new Date(document.getElementById('endDate').value);
-            const lunchBreak = parseInt(document.getElementById('lunchBreak').value, 10);
-            const dinnerBreak = parseInt(document.getElementById('dinnerBreak').value, 10);
-
-            const millisecondsPerHour = 1000 * 60 * 60;
-            const hoursWorked = (endDate - startDate) / millisecondsPerHour;
-            const effectiveHours = hoursWorked - (lunchBreak / 60) - (dinnerBreak / 60);
-
-            let totalPay = 0;
-            let totalUnits = 0;
-            const basePayPerHour = 17500; // 시간당 급여 (140,000원 / 8시간)
-
-            if (effectiveHours <= 8) {
-                totalUnits = effectiveHours / 8;
-                totalPay = totalUnits * 140000; // 1품 = 140,000원
-            } else {
-                totalUnits = 1 + (effectiveHours - 8) / 12; // 8시간 초과 근무 계산
-                totalPay = 140000 + (effectiveHours - 8) * basePayPerHour * 1.5; // 초과 근무 시 1.5배 지급
-            }
-
-            document.getElementById('result').innerHTML = `총 급여: ${totalPay.toLocaleString()}원<br>총 품: ${totalUnits.toFixed(2)}품`;
-        }
-
         function navigateTo(page) {
-            document.getElementById('salary').classList.add('hidden');
-            document.getElementById('main').classList.add('hidden');
-            document.getElementById('settings').classList.add('hidden');
-            document.getElementById(page).classList.remove('hidden');
-        }
-
-        function saveSettings() {
-            const userName = document.getElementById('userName').value;
-            const userEmail = document.getElementById('userEmail').value;
-            alert(`설정이 저장되었습니다.\n이름: ${userName}\n이메일: ${userEmail}`);
-        }
-
-        // 페이지가 로드될 때 기본 날짜와 시간을 설정합니다.
-        window.onload = function() {
-            setDefaultDateTime();
-            generateCalendar();
-        };
-
-        // 달력을 생성하는 함수
-        function generateCalendar() {
-            const calendar = document.getElementById('calendar');
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = today.getMonth();
-            
-            // 달력 헤더 생성
-            const daysOfWeek = ['일', '월', '화', '수', '목', '금', '토'];
-            let headerRow = '<tr>';
-            for (let day of daysOfWeek) {
-                headerRow += `<th>${day}</th>`;
-            }
-            headerRow += '</tr>';
-            calendar.innerHTML = headerRow;
-            
-            // 달력 날짜 생성
-            const firstDayOfMonth = new Date(year, month, 1).getDay();
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
-            let date = 1;
-            for (let i = 0; i < 6; i++) {
-                let row = '<tr>';
-                for (let j = 0; j < 7; j++) {
-                    if (i === 0 && j < firstDayOfMonth) {
-                        row += '<td></td>';
-                    } else if (date > daysInMonth) {
-                        break;
-                    } else {
-                        row += `<td>${date}</td>`;
-                        date++;
-                    }
-                }
-                row += '</tr>';
-                calendar.innerHTML += row;
-            }
+            window.location.href = page;
         }
     </script>
 </body>
