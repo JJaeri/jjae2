@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -62,6 +64,44 @@
     <div class="container">
         <h2>메인 페이지</h2>
         <p>여기에 메인 페이지 내용을 추가하세요.</p>
+        function generateCalendar() {
+            const calendar = document.getElementById('calendar');
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = today.getMonth();
+            
+            // 달력 헤더 생성
+            const daysOfWeek = ['일', '월', '화', '수', '목', '금', '토'];
+            let headerRow = '<tr>';
+            for (let day of daysOfWeek) {
+                headerRow += `<th>${day}</th>`;
+            }
+            headerRow += '</tr>';
+            calendar.innerHTML = headerRow;
+            
+            // 달력 날짜 생성
+            const firstDayOfMonth = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            let date = 1;
+            for (let i = 0; i < 6; i++) {
+                let row = '<tr>';
+                for (let j = 0; j < 7; j++) {
+                    if (i === 0 && j < firstDayOfMonth) {
+                        row += '<td></td>';
+                    } else if (date > daysInMonth) {
+                        break;
+                    } else {
+                        row += `<td>${date}</td>`;
+                        date++;
+                    }
+                }
+                row += '</tr>';
+                calendar.innerHTML += row;
+            }
+        }
+    </script>
+</body>
+                    </html>
     </div>
 
     <div class="footer">
