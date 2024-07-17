@@ -15,6 +15,7 @@
         button { width: 100%; padding: 10px; background: #4CAF50; color: white; border: none; cursor: pointer; }
         button:hover { background: #45a049; }
         .result { margin-top: 20px; padding: 10px; background: #f1f1f1; }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
@@ -23,17 +24,12 @@
             <h1>급여계산기</h1>
         </div>
         
-        <div class="calendar">
+        <div id="main" class="calendar">
+            <h2>메인 페이지</h2>
             <!-- 달력 표시 부분 -->
         </div>
-        
-        <div class="footer">
-            <button onclick="navigateTo('salary')">급여계산</button>
-            <button onclick="navigateTo('main')">메인페이지</button>
-            <button onclick="navigateTo('settings')">설정</button>
-        </div>
-        
-        <div id="salary" class="input-group">
+
+        <div id="salary" class="input-group hidden">
             <label for="startDate">근무 시작 날짜 및 시간:</label>
             <input type="datetime-local" id="startDate" name="startDate">
             
@@ -44,6 +40,91 @@
             <input type="number" id="lunchBreak" name="lunchBreak" value="60">
             
             <label for="dinnerBreak">저녁시간 (분):</label>
+            <input type="number" id="dinnerBreak" name="dinnerBreak" value="0">
+            
+            <button onclick="calculateSalary()">계산하기</button>
+            
+            <div class="result" id="result"></div>
+        </div>
+
+        <div id="settings" class="input-group hidden">
+            <h2>설정 페이지</h2>
+            <label for="userName">사용자 이름:</label>
+            <input type="text" id="userName" name="userName">
+            
+            <label for="userEmail">이메일 주소:</label>
+            <input type="email" id="userEmail" name="userEmail">
+            
+            <button onclick="saveSettings()">저장하기</button>
+        </div>
+
+        <div class="footer">
+            <button onclick="navigateTo('salary')">급여계산</button>
+            <button onclick="navigateTo('main')">메인페이지</button>
+            <button onclick="navigateTo('settings')">설정</button>
+        </div>
+    </div>
+
+    <script>
+        // 오늘 날짜와 기본 시간을 설정하는 함수
+        function setDefaultDateTime() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            const startDate = `${year}-${month}-${day}T07:00`;
+            const endDate = `${year}-${month}-${day}T16:00`;
+
+            document.getElementById('startDate').value = startDate;
+            document.getElementById('endDate').value = endDate;
+        }
+
+        function calculateSalary() {
+            const startDate = new Date(document.getElementById('startDate').value);
+            const endDate = new Date(document.getElementById('endDate').value);
+            const lunchBreak = parseInt(document.getElementById('lunchBreak').value, 10);
+            const dinnerBreak = parseInt(document.getElementById('dinnerBreak').value, 10);
+
+            const millisecondsPerHour = 1000 * 60 * 60;
+            const hoursWorked = (endDate - startDate) / millisecondsPerHour;
+            const effectiveHours = hoursWorked - (lunchBreak / 60) - (dinnerBreak / 60);
+
+            let totalPay = 0;
+            let totalUnits = 0;
+            const basePayPerHour = 17500; // 시간당 급여 (140,000원 / 8시간)
+
+            if (effectiveHours <= 8) {
+                totalUnits = effectiveHours / 8;
+                totalPay = totalUnits * 140000; // 1품 = 140,000원
+            } else {
+                totalUnits = 1 + (effectiveHours - 8) / 12; // 8시간 초과 근무 계산
+                totalPay = 140000 + (effectiveHours - 8) * basePayPerHour * 1.5; // 초과 근무 시 1.5배 지급
+            }
+
+            document.getElementById('result').innerHTML = `총 급여: ${totalPay.toLocaleString()}원<br>총 품: ${totalUnits.toFixed(2)}품`;
+        }
+
+        function navigateTo(page) {
+            document.getElementById('salary').classList.add('hidden');
+            document.getElementById('main').classList.add('hidden');
+            document.getElementById('settings').classList.add('hidden');
+            document.getElementById(page).classList.remove('hidden');
+        }
+
+        function saveSettings() {
+            const userName = document.getElementById('userName').value;
+            const userEmail = document.getElementById('userEmail').value;
+            alert(`설정이 저장되었습니다.\n이름: ${userName}\n이메일: ${userEmail}`);
+        }
+
+        // 페이지가 로드될 때 기본 날짜와 시간을 설정합니다.
+        window.onload = setDefaultDateTime;
+    </script>
+</body>
+</html>
+
+
+
             <input type="number" id="dinnerBreak" name="dinnerBreak" value="0">
             
             <button onclick="calculateSalary()">계산하기</button>
