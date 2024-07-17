@@ -19,8 +19,8 @@ function calculatePay(hours, minutes) {
     let totalHours = hours + minutes / 60.0;
     let regularHours = Math.min(totalHours, BASE_HOUR);
     let overtimeHours = Math.max(totalHours - BASE_HOUR, 0);
-    let overtimePay;
 
+    let overtimePay = 0;
     if (overtimeHours > 4) {
         overtimePay = (4 * OVERTIME_RATE_1 + (overtimeHours - 4) * OVERTIME_RATE_2);
     } else {
@@ -28,7 +28,7 @@ function calculatePay(hours, minutes) {
     }
 
     let totalPay = regularHours + overtimePay;
-    return totalPay;
+    return totalPay / BASE_HOUR; // 품 수 계산
 }
 
 function isValidWorkTime(workTime) {
@@ -93,3 +93,8 @@ function navigateTo(page) {
 }
 
 window.onload = setDefaultDateTime;
+
+
+
+
+   
