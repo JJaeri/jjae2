@@ -14,57 +14,37 @@ function calculatePay(hours, minutes) {
     const BASE_HOUR = 8.0;
     const OVERTIME_RATE_1 = 1.5;
     const OVERTIME_RATE_2 = 2.0;
-    const WAGE_PER_UNIT = 140000;
 
     let totalHours = hours + minutes / 60.0;
     let regularHours = Math.min(totalHours, BASE_HOUR);
     let overtimeHours = Math.max(totalHours - BASE_HOUR, 0);
+    let effectiveHours = regularHours;
 
-    let overtimePay = 0;
     if (overtimeHours > 4) {
-        overtimePay = (4 * OVERTIME_RATE_1 + (overtimeHours - 4) * OVERTIME_RATE_2);
+        effectiveHours += 4 * OVERTIME_RATE_1 + (overtimeHours - 4) * OVERTIME_RATE_2;
     } else {
-        overtimePay = overtimeHours * OVERTIME_RATE_1;
+        effectiveHours += overtimeHours * OVERTIME_RATE_1;
     }
 
-    let totalPay = regularHours + overtimePay;
-    return totalPay / BASE_HOUR; // 품 수 계산
+    return effectiveHours;
 }
 
-function isValidWorkTime(workTime) {
-    const timeParts = workTime.split(':');
-    if (timeParts.length !== 2) return false;
+function calculateFinalAmount(startDate, endDate, lunchBreak, dinnerBreak) {
+    const millisecondsPerHour = 1000 * 60 * 60;
+    const totalWorkMilliseconds = endDate - startDate;
+    const totalWorkHours = totalWorkMilliseconds / millisecondsPerHour;
 
-    const hours = parseInt(timeParts[0], 10);
-    const minutes = parseInt(timeParts[1], 10);
+    const breakHours = (lunchBreak + dinnerBreak) / 60;
+    const effectiveHours = totalWorkHours - breakHours;
+    const effectiveMinutes = (effectiveHours % 1) * 60;
 
-    if (isNaN(hours) || isNaN(minutes)) return false;
-    if (hours < 8 || hours > 24 || minutes < 0 || minutes > 59) return false;
-
-    return true;
-}
-
-function calculateTax(amount) {
-    const TAX_RATE = 0.154;
-    return amount * TAX_RATE;
-}
-
-function calculateFinalAmount(hours, minutes) {
-    if (!isValidWorkTime(`${hours}:${minutes}`)) {
-        console.error("Invalid time format");
-        return;
-    }
-
-    let totalUnits = calculatePay(hours, minutes);
-    let totalWage = totalUnits * 140000;
-    let tax = calculateTax(totalWage);
-    let finalAmount = totalWage - tax;
+    const adjustedHours = calculatePay(Math.floor(effectiveHours), Math.floor(effectiveMinutes));
+    const totalUnits = adjustedHours / 8.0;
 
     return {
-        totalUnits: totalUnits,
-        totalWage: totalWage,
-        tax: tax,
-        finalAmount: finalAmount
+        totalWorkHours: totalWorkHours.toFixed(2),
+        effectiveHours: adjustedHours.toFixed(2),
+        totalUnits: totalUnits.toFixed(2)
     };
 }
 
@@ -74,18 +54,9 @@ function calculateSalary() {
     const lunchBreak = parseInt(document.getElementById('lunchBreak').value, 10);
     const dinnerBreak = parseInt(document.getElementById('dinnerBreak').value, 10);
 
-    const millisecondsPerHour = 1000 * 60 * 60;
-    const hoursWorked = (endDate - startDate) / millisecondsPerHour;
-    const effectiveHours = hoursWorked - (lunchBreak / 60) - (dinnerBreak / 60);
-    const effectiveMinutes = (effectiveHours % 1) * 60;
+    const result = calculateFinalAmount(startDate, endDate, lunchBreak, dinnerBreak);
 
-    const result = calculateFinalAmount(Math.floor(effectiveHours), Math.floor(effectiveMinutes));
-
-    if (result) {
-        document.getElementById('result').innerHTML = `총 급여: ${result.totalWage.toLocaleString()}원<br>총 품: ${result.totalUnits.toFixed(2)}품<br>세금: ${result.tax.toLocaleString()}원<br>최종 금액: ${result.finalAmount.toLocaleString()}원`;
-    } else {
-        document.getElementById('result').innerHTML = `잘못된 시간 형식입니다. 다시 확인해 주세요.`;
-    }
+    document.getElementById('result').innerHTML = `총 근무 시간: ${result.totalWorkHours}시간<br>휴식 및 초과근무 반영 시간: ${result.effectiveHours}시간<br>총 품수: ${result.totalUnits}품`;
 }
 
 function navigateTo(page) {
@@ -93,8 +64,3 @@ function navigateTo(page) {
 }
 
 window.onload = setDefaultDateTime;
-
-
-
-
-   
