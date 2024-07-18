@@ -1,120 +1,29 @@
-
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>급여계산기</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-image: url('background-image-url'); /* 배경 이미지 URL */
-            background-size: cover;
-            background-position: center;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-        .container {
-            width: 80%;
-            margin: 0 auto;
-            flex: 1;
-        }
-        .header, .footer {
-            text-align: center;
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.8);
-        }
-        .footer {
-            position: fixed;
-            width: 100%;
-            bottom: 0;
-            left: 0;
-        }
-        button {
-            width: 100px;
-            padding: 10px;
-            background: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        button:hover {
-            background: #45a049;
-        }
-        .buttons {
-            display: flex;
-            justify-content: space-around;
-        }
-    </style>
+    <title>메인 페이지</title>
+    <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body>
-    <div class="header">
-        <h1>급여계산기</h1>
-        <div class="buttons">
-            <button onclick="navigateTo('salary.html')">급여계산</button>
-            <button onclick="navigateTo('index.html')">메인페이지</button>
-            <button onclick="navigateTo('settings.html')">설정</button>
-        </div>
-    </div>
-
-    <div class="container">
-        <h2>메인 페이지</h2>
-        <p>여기에 메인 페이지 내용을 추가하세요.</p>
-        function generateCalendar() {
-            const calendar = document.getElementById('calendar');
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = today.getMonth();
-            
-            // 달력 헤더 생성
-            const daysOfWeek = ['일', '월', '화', '수', '목', '금', '토'];
-            let headerRow = '<tr>';
-            for (let day of daysOfWeek) {
-                headerRow += `<th>${day}</th>`;
-            }
-            headerRow += '</tr>';
-            calendar.innerHTML = headerRow;
-            
-            // 달력 날짜 생성
-            const firstDayOfMonth = new Date(year, month, 1).getDay();
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
-            let date = 1;
-            for (let i = 0; i < 6; i++) {
-                let row = '<tr>';
-                for (let j = 0; j < 7; j++) {
-                    if (i === 0 && j < firstDayOfMonth) {
-                        row += '<td></td>';
-                    } else if (date > daysInMonth) {
-                        break;
-                    } else {
-                        row += `<td>${date}</td>`;
-                        date++;
-                    }
-                }
-                row += '</tr>';
-                calendar.innerHTML += row;
-            }
-        }
-    </script>
-                
-    </div>
-
-    <div class="footer">
-        <div class="buttons">
-            <button onclick="navigateTo('salary.html')">급여계산</button>
-            <button onclick="navigateTo('index.html')">메인페이지</button>
-            <button onclick="navigateTo('settings.html')">설정</button>
-        </div>
-    </div>
-
-    <script>
-        function navigateTo(page) {
-            window.location.href = page;
-        }
-    </script>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="index.html">메인</a></li>
+                <li><a href="login.html">로그인</a></li>
+                <li><a href="signup.html">회원 가입</a></li>
+                <li><a href="salary.html">급여 계산기</a></li>
+                <li><a href="settings.html">설정</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h1>안녕?</h1>
+        <p>열심히 만들어봤어.</p>
+    </main>
+    <footer>
+        <p>&copy; 부자가 되고 싶은 J. </p>
+    </footer>
 </body>
 </html>
