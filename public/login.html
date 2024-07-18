@@ -7,17 +7,6 @@
     <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body>
-    <header>
-        <nav>
-            <ul>
-                <li><a href="index.html">메인</a></li>
-                <li><a href="login.html">로그인</a></li>
-                <li><a href="signup.html">회원 가입</a></li>
-                <li><a href="salary.html">급여 계산기</a></li>
-                <li><a href="settings.html">설정</a></li>
-            </ul>
-        </nav>
-    </header>
     <div class="container">
         <h1>로그인</h1>
         <input type="email" id="login-email" placeholder="이메일" required><br>
@@ -25,7 +14,11 @@
         <button id="login-button">로그인</button>
     </div>
 
+    <!-- Load common header -->
+    <script src="../src/loadHeader.js"></script>
+
     <!-- Custom JS -->
     <script type="module" src="../src/login.js"></script>
 </body>
 </html>
+
