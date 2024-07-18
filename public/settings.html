@@ -3,102 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>급여계산기 - 설정</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-        .container {
-            width: 80%;
-            margin: 0 auto;
-            flex: 1;
-        }
-        .header, .footer {
-            text-align: center;
-            padding: 10px;
-            background: #f8f8f8;
-        }
-        .footer {
-            position: fixed;
-            width: 100%;
-            bottom: 0;
-            left: 0;
-        }
-        .input-group {
-            margin-bottom: 10px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-        }
-        input[type="text"], input[type="email"] {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 10px;
-        }
-        button {
-            width: 100px;
-            padding: 10px;
-            background: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        button:hover {
-            background: #45a049;
-        }
-        .buttons {
-            display: flex;
-            justify-content: space-around;
-        }
-    </style>
+    <title>설정</title>
+    <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body>
-    <div class="header">
-        <h1>급여계산기</h1>
-        <div class="buttons">
-            <button onclick="navigateTo('salary.html')">급여계산</button>
-            <button onclick="navigateTo('index.html')">메인페이지</button>
-            <button onclick="navigateTo('settings.html')">설정</button>
-        </div>
-    </div>
-
     <div class="container">
-        <h2>설정 페이지</h2>
-        <div class="input-group">
-            <label for="userName">사용자 이름:</label>
-            <input type="text" id="userName" name="userName">
-            
-            <label for="userEmail">이메일 주소:</label>
-            <input type="email" id="userEmail" name="userEmail">
-            
-            <button onclick="saveSettings()">저장하기</button>
-        </div>
+        <h1>설정</h1>
+        <p>이곳은 설정 페이지입니다.</p>
     </div>
 
-    <div class="footer">
-        <div class="buttons">
-            <button onclick="navigateTo('salary.html')">급여계산</button>
-            <button onclick="navigateTo('index.html')">메인페이지</button>
-            <button onclick="navigateTo('settings.html')">설정</button>
-        </div>
-    </div>
-
-    <script>
-        function navigateTo(page) {
-            window.location.href = page;
-        }
-
-        function saveSettings() {
-            const userName = document.getElementById('userName').value;
-            const userEmail = document.getElementById('userEmail').value;
-            alert(`설정이 저장되었습니다.\n이름: ${userName}\n이메일: ${userEmail}`);
-        }
-    </script>
+    <!-- Custom JS -->
+    <script src="../src/settings.js"></script>
 </body>
 </html>
+
