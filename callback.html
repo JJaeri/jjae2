@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub OAuth Callback</title>
+</head>
+<body>
+    <h1>OAuth Callback</h1>
+    <div id="message">처리 중...</div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+        const state = urlParams.get('state');
+
+        if (code && state) {
+            fetch('/.netlify/functions/oauth', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ code, state })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('message').innerText = `인증 완료: ${data.access_token}`;
+            })
+            .catch(error => {
+                document.getElementById('message').innerText = '인증 실패';
+            });
+        } else {
+            document.getElementById('message').innerText = '인증 실패';
+        }
+    </script>
+</body>
+</html>
+
